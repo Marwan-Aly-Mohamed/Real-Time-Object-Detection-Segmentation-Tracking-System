@@ -17,9 +17,11 @@ model = YOLO("yolo26n-seg.pt")
 # Make a blank test image so we don't need any file
 test_image = np.zeros((480, 640, 3), dtype=np.uint8)
 
-start = time.time()
-results = model(test_image, device="cpu", verbose=False)
-elapsed_ms = (time.time() - start) * 1000
+# The first call is slow (warm-up). Later calls show the real speed.
+for i in range(5):
+    start = time.time()
+    results = model(test_image, device="cpu", verbose=False)
+    elapsed_ms = (time.time() - start) * 1000
+    print(f"Inference {i + 1}: {elapsed_ms:.0f} ms")
 
-print(f"Model loaded and ran one inference in {elapsed_ms:.0f} ms")
 print("Setup is OK!")
